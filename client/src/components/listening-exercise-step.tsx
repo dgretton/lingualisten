@@ -71,7 +71,15 @@ export function ListeningExerciseStep({
           className="text-sm"
         >
           {showText ? "Ocultar texto" : "Mostrar texto en inglés"} 
-          <i className={`fas fa-chevron-${showText ? 'up' : 'down'} ml-1`}></i>
+          {showText ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+              <path d="m18 15-6-6-6 6"/>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          )}
         </Button>
       </div>
       
@@ -96,7 +104,9 @@ export function ListeningExerciseStep({
           className="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium rounded-lg shadow-sm transition flex items-center"
           onClick={onBack}
         >
-          <i className="fas fa-arrow-left mr-2"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+            <path d="m15 18-6-6 6-6"></path>
+          </svg>
           Atrás
         </Button>
         <Button 
@@ -105,7 +115,9 @@ export function ListeningExerciseStep({
           disabled={!hasListened}
         >
           Responder preguntas
-          <i className="fas fa-arrow-right ml-2"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2">
+            <path d="m9 18 6-6-6-6"></path>
+          </svg>
         </Button>
       </div>
     </div>

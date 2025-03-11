@@ -100,13 +100,16 @@ export function TopicInputStep({ onSubmit }: TopicInputStepProps) {
           
           <SpeechInput onTranscriptChange={handleSpeechTranscript} />
           
-          <div className="mt-8 flex justify-end">
+          <div className="mt-8 flex justify-center">
             <Button 
               type="submit"
-              className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg shadow-sm transition flex items-center"
+              className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg shadow-md transition flex items-center text-lg"
             >
               Continuar
-              <i className="fas fa-arrow-right ml-2"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
             </Button>
           </div>
         </form>
