@@ -298,10 +298,7 @@ export function StudentQuiz() {
       setSelectedOption(null);
       setIsAnswerRevealed(false);
       
-      // Auto-speak next question after a short delay
-      setTimeout(() => {
-        speakText(QUIZ_QUESTIONS[currentQuestionIndex + 1].audio);
-      }, 500);
+      // Removed auto-speak for next question
     } else {
       // Quiz completed
       setQuizCompleted(true);
@@ -325,10 +322,7 @@ export function StudentQuiz() {
         description: "Se han borrado todos los datos guardados."
       });
       
-      // Speak the first question after a short delay
-      setTimeout(() => {
-        speakText(QUIZ_QUESTIONS[0].audio);
-      }, 500);
+      // Removed auto-speak of first question
     }
   };
 
@@ -366,21 +360,24 @@ export function StudentQuiz() {
     });
   };
 
-  // Auto-speak first question when component mounts
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!quizCompleted && currentQuestion) {
-        speakText(currentQuestion.audio);
-      }
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Remove auto-speech on component mount
+  // We'll only speak when the user clicks the Escuchar button
 
   if (quizCompleted) {
     return (
       <div className="max-w-3xl mx-auto">
+        <div className="mb-4">
+          <a 
+            href="/" 
+            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5"></path>
+              <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+            Volver a la página de inicio
+          </a>
+        </div>
         <Card className="p-6">
           <h2 className="text-2xl font-bold mb-6">Resumen de la Prueba</h2>
           
@@ -477,7 +474,19 @@ export function StudentQuiz() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Spring Landscaping Quiz</h1>
+        <div className="flex items-center gap-3">
+          <a 
+            href="/" 
+            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5"></path>
+              <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+            Volver
+          </a>
+          <h1 className="text-2xl font-bold">Spring Landscaping Quiz</h1>
+        </div>
         <div className="text-lg font-semibold">
           {correctAnswersCount}/{currentQuestionIndex + 1}
         </div>
