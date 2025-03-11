@@ -395,9 +395,20 @@ export function StudentQuiz() {
               const question = QUIZ_QUESTIONS[answer.questionIndex];
               return (
                 <div key={i} className="border-b pb-2">
-                  <div className="font-medium">
-                    Pregunta {answer.questionIndex + 1}: "{question.audio}"
+                  <div className="font-medium mb-2">
+                    Pregunta {answer.questionIndex + 1}:
                   </div>
+                  <button 
+                    onClick={() => speakText(question.audio)}
+                    className="w-full flex items-center p-2 mb-2 border rounded border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600 mr-2">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                    <span className="font-bold text-left text-blue-800">{question.audio}</span>
+                  </button>
                   <div className="ml-4 text-green-600">
                     Correcta: {question.options[question.correctIndex]}
                   </div>
@@ -507,29 +518,30 @@ export function StudentQuiz() {
       
       <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
         <p className="text-blue-800">
-          Haz clic en la traducción española correcta del audio en inglés.
+          <strong>Instrucciones:</strong>
         </p>
+        <ol className="text-blue-800 mt-1 list-decimal pl-5">
+          <li>Haz clic en el texto en inglés con el ícono de audio para escucharlo</li>
+          <li>Selecciona la traducción española correcta entre las opciones</li>
+        </ol>
       </div>
       
       <Card className="overflow-hidden">
         <div className="p-4 bg-gray-50 border-b">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-3">
             <div className="font-semibold">Pregunta {currentQuestionIndex + 1}</div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => speakText(currentQuestion.audio)}
-              className="flex items-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-              </svg>
-              Escuchar
-            </Button>
           </div>
-          <div className="mt-2 font-medium">{currentQuestion.audio}</div>
+          <button 
+            onClick={() => speakText(currentQuestion.audio)}
+            className="w-full flex items-center p-3 border rounded border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600 mr-3">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <span className="font-bold text-left text-blue-800">{currentQuestion.audio}</span>
+          </button>
         </div>
         
         <div className="p-4">
