@@ -409,13 +409,20 @@ export function StudentQuiz() {
                     </svg>
                     <span className="font-bold text-left text-blue-800">{question.audio}</span>
                   </button>
-                  <div className="ml-4 text-green-600">
-                    Correcta: {question.options[question.correctIndex]}
-                  </div>
-                  <div className={`ml-4 ${answer.isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                    Tu respuesta: {question.options[answer.selectedOptionIndex]}{' '}
-                    {answer.isCorrect ? '✓' : '✗'}
-                  </div>
+                  {answer.isCorrect ? (
+                    <div className="ml-4 text-green-600">
+                      Correcta: {question.options[question.correctIndex]} ✓
+                    </div>
+                  ) : (
+                    <>
+                      <div className="ml-4 text-green-600">
+                        Correcta: {question.options[question.correctIndex]}
+                      </div>
+                      <div className="ml-4 text-red-600">
+                        Tu respuesta: {question.options[answer.selectedOptionIndex]} ✗
+                      </div>
+                    </>
+                  )}
                 </div>
               );
             })}
