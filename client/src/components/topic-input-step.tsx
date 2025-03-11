@@ -101,16 +101,26 @@ export function TopicInputStep({ onSubmit }: TopicInputStepProps) {
           <SpeechInput onTranscriptChange={handleSpeechTranscript} />
           
           <div className="mt-8 flex justify-center">
-            <Button 
+            <button 
               type="submit"
-              className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg shadow-md transition flex items-center text-lg"
+              style={{
+                backgroundColor: "#4f46e5", 
+                color: "white",
+                padding: "0.75rem 2rem",
+                fontSize: "1.125rem",
+                borderRadius: "0.5rem",
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+              }}
             >
               Continuar
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "0.5rem" }}>
                 <path d="M5 12h14"></path>
                 <path d="m12 5 7 7-7 7"></path>
               </svg>
-            </Button>
+            </button>
           </div>
         </form>
       </Form>

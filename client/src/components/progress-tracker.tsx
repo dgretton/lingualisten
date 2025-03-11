@@ -35,7 +35,7 @@ export function ProgressTracker({
                   )}
                 />
               )}
-              <div className="flex items-center space-x-2" data-step={step.id}>
+              <div className="flex items-center space-x-2" id={`step-${step.id}`}>
                 <div
                   className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center font-semibold",
