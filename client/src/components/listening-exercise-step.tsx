@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AudioPlayer } from "./audio-player";
+import { Card } from "@/components/ui/card";
 
 interface ListeningExerciseStepProps {
   title: string;
   audioUrl: string;
+  content: string;
   onContinue: () => void;
   onBack: () => void;
 }
@@ -12,25 +14,42 @@ interface ListeningExerciseStepProps {
 export function ListeningExerciseStep({ 
   title, 
   audioUrl, 
+  content,
   onContinue, 
   onBack 
 }: ListeningExerciseStepProps) {
   const [hasListened, setHasListened] = useState(false);
+  const [showText, setShowText] = useState(false);
   
   const handlePlayStart = () => {
     setHasListened(true);
   };
   
+  // Format the content if it's a list of numbered statements
+  const formatContent = (text: string) => {
+    if (!text) return [];
+    
+    // Check if content is already formatted with numbers (1. 2. 3. etc)
+    if (text.match(/^\d+\.\s/m)) {
+      return text.split('\n').filter(line => line.trim().length > 0);
+    }
+    
+    // Otherwise, just split by newlines
+    return text.split('\n').filter(line => line.trim().length > 0);
+  };
+  
+  const formattedContent = formatContent(content);
+  
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-2xl font-semibold text-slate-800 mb-3">
-        Escucha atentamente
+        Escucha y lee atentamente
       </h2>
       <p className="text-slate-600 mb-6">
-        Reproduce el audio y presta atención. Después deberás responder preguntas sobre lo que escuchaste.
+        Reproduce el audio y presta atención. También puedes leer el texto en inglés. Después deberás responder preguntas sobre el contenido.
       </p>
       
-      <div className="bg-slate-100 p-6 rounded-lg mb-8 border border-slate-200">
+      <div className="bg-slate-100 p-6 rounded-lg mb-6 border border-slate-200">
         <AudioPlayer 
           src={audioUrl} 
           title={title} 
@@ -43,6 +62,33 @@ export function ListeningExerciseStep({
           </p>
         </div>
       </div>
+      
+      {/* Toggle button for showing/hiding text */}
+      <div className="text-center mb-6">
+        <Button
+          variant="outline"
+          onClick={() => setShowText(!showText)}
+          className="text-sm"
+        >
+          {showText ? "Ocultar texto" : "Mostrar texto en inglés"} 
+          <i className={`fas fa-chevron-${showText ? 'up' : 'down'} ml-1`}></i>
+        </Button>
+      </div>
+      
+      {/* Text content */}
+      {showText && (
+        <Card className="p-6 mb-8 border-l-4 border-l-primary-500">
+          <h3 className="text-lg font-medium text-slate-800 mb-3">English Content:</h3>
+          <div className="space-y-3">
+            {formattedContent.map((line, index) => (
+              <div key={index} className="flex">
+                <div className="text-primary-600 font-medium mr-2">{line.match(/^\d+\./) ? '' : `${index + 1}.`}</div>
+                <p className="text-slate-700">{line.replace(/^\d+\.\s/, '')}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
       
       <div className="flex justify-between mt-8">
         <Button
