@@ -134,6 +134,7 @@ export default function Home() {
               <ListeningExerciseStep
                 title={prompt}
                 audioUrl={generatedContent.audioUrl}
+                content={generatedContent.content}
                 onContinue={nextStep}
                 onBack={prevStep}
               />
