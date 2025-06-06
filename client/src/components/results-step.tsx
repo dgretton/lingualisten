@@ -123,7 +123,7 @@ export function ResultsStep({ result, questionTexts, onReset }: ResultsStepProps
         </div>
         
         <div className="text-sm text-slate-600 flex justify-between">
-          <span>0 correctas</span>
+          <span>{result.score} correctas</span>
           <span>{result.totalQuestions} preguntas</span>
         </div>
       </div>
@@ -223,7 +223,7 @@ export function ResultsStep({ result, questionTexts, onReset }: ResultsStepProps
         </Button>
         <Button 
           variant="default"
-          className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg shadow-sm transition flex items-center"
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition flex items-center"
           onClick={() => window.print()}
         >
           Imprimir reporte
