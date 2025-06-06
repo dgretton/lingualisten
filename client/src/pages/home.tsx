@@ -11,6 +11,7 @@ interface QuizQuestion {
   id: number;
   question: string;
   options: string[];
+  correctOption: number;
 }
 
 interface Answer {
@@ -96,7 +97,7 @@ export default function Home() {
         questionMapData[question.id] = {
           question: question.question,
           options: question.options,
-          correctOption: 0 // This should come from the API response, but for now we'll use 0 as placeholder
+          correctOption: question.correctOption // Use the correct answer from the API
         };
       });
       setQuestionMap(questionMapData);

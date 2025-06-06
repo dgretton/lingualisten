@@ -123,7 +123,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         questions: questions.map(q => ({
           id: q.id,
           question: q.question,
-          options: q.options
+          options: q.options,
+          correctOption: q.correctOption // Include the correct answer index after randomization
         }))
       });
     } catch (error) {
