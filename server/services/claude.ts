@@ -39,7 +39,7 @@ Create a JSON response with:
    - Clear, everyday language (avoid technical jargon)
    - Each statement should be 1-2 sentences maximum
 
-2. "spanishQuestions": Exactly 5 multiple-choice questions in Spanish that test understanding of the English content. Each question should have 4 options with only one correct answer. Use everyday Spanish expressions suitable for adult learners.
+2. "spanishQuestions": Exactly 5 multiple-choice questions in English that test understanding of the English content. Each question should have 4 Spanish answer options with only one correct answer. The questions should ask about the meaning, context, or details from the English content, and the answer options should be probable Spanish translations or responses that an adult learner might consider.
 
 3. "spanishPhoneticTranscription": A phonetic transcription of the English content using Spanish alphabet letters (like in Barron's bilingual dictionaries). Help Spanish speakers pronounce the English words by writing them as they would sound using Spanish spelling patterns.
 
@@ -50,7 +50,7 @@ Example format:
   "englishContent": "1. Put on your safety glasses before starting work.\\n2. The supervisor will check your progress at noon.\\n3. Clean your tools at the end of each shift.",
   "spanishQuestions": [
     {
-      "question": "¿Qué debes ponerte antes de empezar a trabajar?",
+      "question": "What should you put on before starting work?",
       "options": ["Los guantes", "Los lentes de seguridad", "El casco", "Las botas"],
       "correctOptionIndex": 1
     }
