@@ -226,7 +226,7 @@ export default function Home() {
     }
   };
 
-  // Reset quiz
+  // Reset quiz completely (new topic)
   const handleReset = () => {
     setCurrentStep('setup');
     setTopic("");
@@ -238,6 +238,67 @@ export default function Home() {
     setIsAnswerRevealed(false);
     setAnswers([]);
     setFinalResult(null);
+  };
+
+  // Retry the same quiz with same questions
+  const handleRetryQuiz = () => {
+    // Reshuffle the options for each question
+    const reshuffledQuestions = questions.map(question => {
+      const questionData = questionMap[question.id];
+      if (!questionData) return question;
+
+      // Create array of options with their original indices
+      const optionsWithIndices = question.options.map((option, idx) => ({
+        option,
+        originalIndex: idx
+      }));
+      
+      // Shuffle the options
+      for (let i = optionsWithIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [optionsWithIndices[i], optionsWithIndices[j]] = [optionsWithIndices[j], optionsWithIndices[i]];
+      }
+      
+      // Find the new position of the correct answer
+      const newCorrectIndex = optionsWithIndices.findIndex(
+        item => item.originalIndex === questionData.correctOption
+      );
+      
+      // Extract just the shuffled options
+      const shuffledOptions = optionsWithIndices.map(item => item.option);
+      
+      return {
+        ...question,
+        options: shuffledOptions
+      };
+    });
+
+    // Update the question map with new correct indices
+    const newQuestionMap: Record<number, { question: string; options: string[]; correctOption: number }> = {};
+    reshuffledQuestions.forEach(question => {
+      const originalQuestionData = questionMap[question.id];
+      if (originalQuestionData) {
+        // Find the new position of the correct answer after reshuffling
+        const newCorrectIndex = question.options.findIndex(
+          option => option === originalQuestionData.options[originalQuestionData.correctOption]
+        );
+        
+        newQuestionMap[question.id] = {
+          question: question.question,
+          options: question.options,
+          correctOption: newCorrectIndex
+        };
+      }
+    });
+
+    setQuestions(reshuffledQuestions);
+    setQuestionMap(newQuestionMap);
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setIsAnswerRevealed(false);
+    setAnswers([]);
+    setFinalResult(null);
+    setCurrentStep('quiz');
   };
 
   // Setup Step
@@ -479,13 +540,20 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-3 justify-center flex-wrap">
+              <Button
+                variant="outline"
+                onClick={handleRetryQuiz}
+                className="px-6"
+              >
+                Repetir quiz
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleReset}
                 className="px-6"
               >
-                Practicar otro tema
+                Nuevo tema
               </Button>
               <Button
                 onClick={() => window.print()}
