@@ -23,6 +23,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: 'ok' });
   });
   
+  // Claude API health check endpoint
+  app.get(`${apiRoute}/health/claude`, async (req, res) => {
+    try {
+      const { generateContentWithSafeguards } = await import("./services/claude");
+      
+      // Test with a simple Spanish prompt
+      const testResult = await generateContentWithSafeguards("herramientas de trabajo");
+      
+      res.json({ 
+        status: 'ok', 
+        claude_api: 'working',
+        test_content_length: testResult.englishContent.length,
+        questions_count: testResult.spanishQuestions.length,
+        has_phonetic: !!testResult.spanishPhoneticTranscription
+      });
+    } catch (error) {
+      console.error('Claude API test failed:', error);
+      res.status(500).json({ 
+        status: 'error', 
+        claude_api: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+  
   // Check which contact methods are available
   app.get(`${apiRoute}/contact-methods`, (req, res) => {
     res.json({
