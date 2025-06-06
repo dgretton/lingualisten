@@ -106,7 +106,7 @@ export function QuizStep({ questions, onSubmit, onBack }: QuizStepProps) {
           Volver a escuchar
         </Button>
         <Button 
-          className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg shadow-sm transition flex items-center"
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition flex items-center"
           onClick={handleSubmit}
         >
           Ver resultados
