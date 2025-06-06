@@ -82,16 +82,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         createdAt: Math.floor(Date.now() / 1000)
       });
       
-      // Store the questions in memory
+      // Randomize question options and track correct answers
       const questions = await Promise.all(
-        generatedContent.spanishQuestions.map((q, index) => 
-          storage.createQuestion({
+        generatedContent.spanishQuestions.map((q, index) => {
+          // Create array of options with their original indices
+          const optionsWithIndices = q.options.map((option, idx) => ({
+            option,
+            originalIndex: idx
+          }));
+          
+          // Shuffle the options
+          for (let i = optionsWithIndices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [optionsWithIndices[i], optionsWithIndices[j]] = [optionsWithIndices[j], optionsWithIndices[i]];
+          }
+          
+          // Find the new position of the correct answer
+          const newCorrectIndex = optionsWithIndices.findIndex(
+            item => item.originalIndex === q.correctOptionIndex
+          );
+          
+          // Extract just the shuffled options
+          const shuffledOptions = optionsWithIndices.map(item => item.option);
+          
+          return storage.createQuestion({
             topicId: topic.id,
             question: q.question,
-            options: q.options,
-            correctOption: q.correctOptionIndex
-          })
-        )
+            options: shuffledOptions,
+            correctOption: newCorrectIndex
+          });
+        })
       );
       
       // Return the topic, questions, and phonetic transcription
@@ -173,7 +193,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return {
           questionId: answer.questionId,
           selectedOption: answer.selectedOption,
-          isCorrect
+          isCorrect,
+          question: question.question,
+          selectedAnswer: question.options[answer.selectedOption],
+          correctAnswer: question.options[question.correctOption]
         };
       });
       
@@ -313,30 +336,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Generate answers section
             const answersHtml = assessmentData.answers.map((answer: any, index: number) => {
-              const question = quizQuestions[answer.questionId];
-              if (!question) return '';
-              
               const isCorrect = answer.isCorrect;
               const icon = isCorrect ? '✅' : '❌';
               const color = isCorrect ? '#10b981' : '#ef4444';
               
-              const selectedOption = question.options[answer.selectedOption];
-              const correctOption = question.options[question.correctIndex];
+              // Use the answer data that now includes question text and correct/selected answers
+              const questionText = answer.question || `Question ${index + 1}`;
+              const selectedAnswer = answer.selectedAnswer || 'No answer selected';
+              const correctAnswer = answer.correctAnswer || 'Correct answer not available';
               
               return `
                 <div style="margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px;">
-                  <p style="font-weight: 500; margin-bottom: 5px;">${index + 1}. ${question.audio}</p>
+                  <p style="font-weight: 500; margin-bottom: 5px;">${index + 1}. ${questionText}</p>
                   ${isCorrect ? 
                     `<div style="display: flex; align-items: center; margin-top: 5px;">
                       <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #d1fae5; color: ${color}; text-align: center; margin-right: 8px;">${icon}</span>
-                      <p style="color: ${color};">Correcta: ${correctOption}</p>
+                      <p style="color: ${color};">Correcta: ${correctAnswer}</p>
                     </div>` : 
                     `<div style="display: flex; align-items: center; margin-top: 5px;">
                       <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #fee2e2; color: ${color}; text-align: center; margin-right: 8px;">${icon}</span>
-                      <p style="color: #10b981;">Correcta: ${correctOption}</p>
+                      <p style="color: #10b981;">Correcta: ${correctAnswer}</p>
                     </div>
                     <div style="margin-left: 28px; margin-top: 5px;">
-                      <p style="color: ${color};">Tu respuesta: ${selectedOption}</p>
+                      <p style="color: ${color};">Tu respuesta: ${selectedAnswer}</p>
                     </div>`
                   }
                 </div>
