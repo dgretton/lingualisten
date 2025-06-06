@@ -7,11 +7,10 @@ import {
   submitAnswersSchema, 
   shareResultsSchema 
 } from "@shared/schema";
-import { generateContentAndQuestions } from "./services/openai";
+import { generateContentWithSafeguards, translateSpanishToEnglish } from "./services/claude";
 import { generateTTS } from "./services/tts";
 import { sendAssessmentEmail, isEmailAvailable } from "./services/email";
 import { sendAssessmentSMS, isSmsAvailable } from "./services/sms";
-import { translateSpanishToEnglish } from "./services/openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -37,8 +36,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { prompt, userName } = generateContentSchema.parse(req.body);
       
-      // Generate content and questions with OpenAI
-      const generatedContent = await generateContentAndQuestions(prompt);
+      // Generate content and questions with Claude
+      const generatedContent = await generateContentWithSafeguards(prompt);
       
       // Generate audio for the English content
       const audioUrl = await generateTTS(generatedContent.englishContent);
