@@ -61,6 +61,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { prompt, userName } = generateContentSchema.parse(req.body);
       
+      // Log for monitoring usage patterns
+      console.log(`Content generation request from ${userName}: "${prompt.substring(0, 50)}..."`);
+      
+      // Track usage
+      requestsToday++;
+      estimatedCostToday += 0.05; // Rough estimate: $0.05 per request
+      
       // Generate content and questions with Claude
       const generatedContent = await generateContentWithSafeguards(prompt);
       
@@ -87,11 +94,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         )
       );
       
-      // Return the topic and questions
+      // Return the topic, questions, and phonetic transcription
       res.json({
         topicId: topic.id,
         content: topic.content,
         audioUrl: topic.audioUrl,
+        phoneticTranscription: generatedContent.spanishPhoneticTranscription,
         questions: questions.map(q => ({
           id: q.id,
           question: q.question,
@@ -103,6 +111,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: 'Invalid input format', details: error.errors });
       }
+      
+      // Handle specific Claude API errors
+      if (error instanceof Error) {
+        if (error.message.includes('rate_limit')) {
+          return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' });
+        }
+        if (error.message.includes('Prompt too long')) {
+          return res.status(400).json({ error: 'Topic description is too long. Please use fewer words.' });
+        }
+      }
+      
       res.status(500).json({ error: 'Failed to generate content' });
     }
   });
@@ -408,6 +427,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error handling student quiz results:', error);
       res.status(500).json({ error: 'Failed to handle student quiz results' });
     }
+  });
+  
+  // Simple in-memory usage tracking
+  let requestsToday = 0;
+  let estimatedCostToday = 0;
+  
+  // Reset counters daily (simple implementation)
+  setInterval(() => {
+    requestsToday = 0;
+    estimatedCostToday = 0;
+  }, 24 * 60 * 60 * 1000); // 24 hours
+  
+  // Add new endpoint for API usage monitoring
+  app.get(`${apiRoute}/usage-stats`, (req, res) => {
+    const stats = {
+      requestsToday,
+      estimatedCost: estimatedCostToday,
+      remainingBudget: 20.00 - estimatedCostToday // $20 budget
+    };
+    
+    res.json(stats);
   });
 
   return httpServer;
