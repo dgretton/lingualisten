@@ -25,6 +25,15 @@ export function ListeningExerciseStep({
     setHasListened(true);
   };
   
+  // Allow continuing after a short delay even if audio doesn't work
+  useState(() => {
+    const timer = setTimeout(() => {
+      setHasListened(true);
+    }, 3000); // Enable continue button after 3 seconds as fallback
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
   // Format the content if it's a list of numbered statements
   const formatContent = (text: string) => {
     if (!text) return [];
@@ -52,7 +61,7 @@ export function ListeningExerciseStep({
       <div className="bg-slate-100 p-6 rounded-lg mb-6 border border-slate-200">
         <AudioPlayer 
           src={audioUrl} 
-          title={title} 
+          title={content} 
           onPlay={handlePlayStart} 
         />
         
@@ -119,6 +128,12 @@ export function ListeningExerciseStep({
             <path d="m9 18 6-6-6-6"></path>
           </svg>
         </Button>
+        
+        {!hasListened && (
+          <p className="text-sm text-slate-500 text-center mt-2">
+            Haz clic en el botón de reproducir para continuar
+          </p>
+        )}
       </div>
     </div>
   );

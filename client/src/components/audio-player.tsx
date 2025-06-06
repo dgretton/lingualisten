@@ -77,16 +77,47 @@ export function AudioPlayer({ src, title, onPlay, onComplete }: AudioPlayerProps
   }, [playbackRate]);
   
   const togglePlayback = () => {
-    if (!audioRef.current || !isLoaded) return;
+    if (!audioRef.current || !isLoaded) {
+      // Fallback to browser speech synthesis if audio file doesn't work
+      handleBrowserTTS();
+      return;
+    }
     
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch(() => {
+        // If audio fails to play, use browser TTS as fallback
+        handleBrowserTTS();
+      });
       if (onPlay) onPlay();
     }
     
     setIsPlaying(!isPlaying);
+  };
+  
+  const handleBrowserTTS = () => {
+    if ('speechSynthesis' in window) {
+      // Stop any existing speech
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(title);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.7; // Slower for learning
+      utterance.pitch = 1.0;
+      
+      utterance.onstart = () => {
+        setIsPlaying(true);
+        if (onPlay) onPlay();
+      };
+      
+      utterance.onend = () => {
+        setIsPlaying(false);
+        if (onComplete) onComplete();
+      };
+      
+      window.speechSynthesis.speak(utterance);
+    }
   };
   
   const adjustTime = (seconds: number) => {
@@ -112,19 +143,32 @@ export function AudioPlayer({ src, title, onPlay, onComplete }: AudioPlayerProps
         <p className="text-sm text-slate-500 italic">Escucha este clip en inglés</p>
       </div>
       
-      <div className="flex items-center justify-center mb-4">
+      <div className="flex flex-col items-center justify-center mb-4 space-y-3">
         <Button
           variant="ghost"
           size="icon"
           className={cn(
-            "w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-700 text-white flex items-center justify-center transition",
-            !isLoaded && "opacity-50 cursor-not-allowed"
+            "w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-700 text-white flex items-center justify-center transition"
           )}
           onClick={togglePlayback}
-          disabled={!isLoaded}
         >
           <i className={`fas ${isPlaying ? "fa-pause" : "fa-play"} text-xl`}></i>
         </Button>
+        
+        {!isLoaded && (
+          <div className="text-center">
+            <p className="text-sm text-slate-600 mb-2">
+              Usando síntesis de voz del navegador
+            </p>
+            <Button
+              onClick={handleBrowserTTS}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2"
+              disabled={isPlaying}
+            >
+              🔊 Reproducir con voz del navegador
+            </Button>
+          </div>
+        )}
       </div>
       
       <div className="mb-3">
