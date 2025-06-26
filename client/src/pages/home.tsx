@@ -341,6 +341,8 @@ export default function Home() {
   // Retry the same quiz with same questions
   const handleRetryQuiz = () => {
     // Reshuffle the options for each question
+    const newQuestionMap: Record<number, { question: string; options: string[]; correctOption: number }> = {};
+    
     const reshuffledQuestions = questions.map(question => {
       const questionData = questionMap[question.id];
       if (!questionData) return question;
@@ -365,28 +367,17 @@ export default function Home() {
       // Extract just the shuffled options
       const shuffledOptions = optionsWithIndices.map(item => item.option);
       
+      // Update the question map immediately with the correct new index
+      newQuestionMap[question.id] = {
+        question: question.question,
+        options: shuffledOptions,
+        correctOption: newCorrectIndex
+      };
+      
       return {
         ...question,
         options: shuffledOptions
       };
-    });
-
-    // Update the question map with new correct indices
-    const newQuestionMap: Record<number, { question: string; options: string[]; correctOption: number }> = {};
-    reshuffledQuestions.forEach(question => {
-      const originalQuestionData = questionMap[question.id];
-      if (originalQuestionData) {
-        // Find the new position of the correct answer after reshuffling
-        const newCorrectIndex = question.options.findIndex(
-          option => option === originalQuestionData.options[originalQuestionData.correctOption]
-        );
-        
-        newQuestionMap[question.id] = {
-          question: question.question,
-          options: question.options,
-          correctOption: newCorrectIndex
-        };
-      }
     });
 
     setQuestions(reshuffledQuestions);
