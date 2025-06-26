@@ -10,7 +10,7 @@ interface DisclaimerModalProps {
 
 export function DisclaimerModal({ isOpen, onAccept }: DisclaimerModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={onAccept}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
