@@ -234,10 +234,24 @@ export default function Home() {
     } else {
       // Quiz completed - submit answers
       if (topicId) {
+        // Include the current question's answer if it hasn't been added yet
+        const currentAnswer = answers.find(a => a.questionId === currentQuestion.id);
+        const allAnswers = currentAnswer ? answers : [
+          ...answers,
+          {
+            questionId: currentQuestion.id,
+            selectedOptionIndex: selectedOption!,
+            isCorrect: selectedOption === questionMap[currentQuestion.id]?.correctOption,
+            question: currentQuestion.question,
+            selectedAnswer: currentQuestion.options[selectedOption!],
+            correctAnswer: questionMap[currentQuestion.id] ? questionMap[currentQuestion.id].options[questionMap[currentQuestion.id].correctOption] : "Unknown"
+          }
+        ];
+        
         submitAnswersMutation.mutate({
           topicId,
           userName: "Usuario",
-          answers: answers.map(a => ({
+          answers: allAnswers.map(a => ({
             questionId: a.questionId,
             selectedOption: a.selectedOptionIndex
           }))
