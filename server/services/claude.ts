@@ -25,7 +25,7 @@ export interface GeneratedContent {
 
 /**
  * Generate English content from a Spanish prompt and create related quiz questions
- * Optimized for adult Spanish-speaking migrant workers with middle school education
+ * Optimized for adult Spanish-speaking learners with middle school education
  */
 export async function generateContentAndQuestions(
   spanishPrompt: string,
@@ -48,8 +48,14 @@ export async function generateContentAndQuestions(
       }
     }
 
+    // Detect if this is a pronunciation-focused request
+    const isPronunciationFocused = mainTopic.toLowerCase().includes('pronunciar') || 
+                                   mainTopic.toLowerCase().includes('pronunciación') ||
+                                   mainTopic.toLowerCase().includes('sonido') ||
+                                   /\b(th|sh|ch|r|v|b)\b/.test(mainTopic.toLowerCase());
+
     // Build context-aware instruction
-    let instruction = `You are helping adult Spanish-speaking workers learn English for their jobs. They have middle school education and need practical workplace vocabulary.`;
+    let instruction = `You are helping adult Spanish-speaking learners improve their English. They have middle school education and need practical, everyday vocabulary.`;
     
     if (jobContext) {
       instruction += ` The learner works in or studies: ${jobContext}. Tailor the vocabulary and examples to be relevant to this field.`;
