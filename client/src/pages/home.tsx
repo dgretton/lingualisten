@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { DisclaimerModal } from "@/components/disclaimer-modal";
 
 interface QuizQuestion {
   id: number;
@@ -25,6 +26,10 @@ interface Answer {
 
 export default function Home() {
   const { toast } = useToast();
+  
+  // Disclaimer state
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   
   // App state
   const [currentStep, setCurrentStep] = useState<'setup' | 'quiz' | 'results'>('setup');
@@ -226,6 +231,12 @@ export default function Home() {
     }
   };
 
+  // Handle disclaimer acceptance
+  const handleDisclaimerAccept = () => {
+    setDisclaimerAccepted(true);
+    setShowDisclaimer(false);
+  };
+
   // Reset quiz completely (new topic)
   const handleReset = () => {
     setCurrentStep('setup');
@@ -300,6 +311,34 @@ export default function Home() {
     setFinalResult(null);
     setCurrentStep('quiz');
   };
+
+  // Show disclaimer first
+  if (!disclaimerAccepted) {
+    return (
+      <>
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-slate-800 mb-2">LinguaListen</h1>
+              <p className="text-slate-600">Mejora tu comprensión auditiva en inglés</p>
+            </div>
+            
+            <Card className="p-6">
+              <div className="text-center">
+                <p className="text-slate-600 mb-4">
+                  Cargando aplicación...
+                </p>
+              </div>
+            </Card>
+          </div>
+        </div>
+        <DisclaimerModal 
+          isOpen={showDisclaimer} 
+          onAccept={handleDisclaimerAccept} 
+        />
+      </>
+    );
+  }
 
   // Setup Step
   if (currentStep === 'setup') {
