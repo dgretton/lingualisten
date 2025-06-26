@@ -48,12 +48,6 @@ export async function generateContentAndQuestions(
       }
     }
 
-    // Detect if this is a pronunciation-focused request
-    const isPronunciationFocused = mainTopic.toLowerCase().includes('pronunciar') || 
-                                   mainTopic.toLowerCase().includes('pronunciación') ||
-                                   mainTopic.toLowerCase().includes('sonido') ||
-                                   /\b(th|sh|ch|r|v|b)\b/.test(mainTopic.toLowerCase());
-
     // Build context-aware instruction
     let instruction = `You are helping adult Spanish-speaking learners improve their English. They have middle school education and need practical, everyday vocabulary.`;
     
@@ -64,10 +58,10 @@ export async function generateContentAndQuestions(
     if (levelContext) {
       const levelAdjustments = {
         'básico': 'Use very simple vocabulary, short sentences, and focus on the most essential phrases. Avoid complex grammar.',
-        'intermedio': 'Use moderate vocabulary with some workplace-specific terms. Include slightly longer sentences but keep them clear.',
-        'avanzado': 'Use more sophisticated vocabulary and longer sentences. Include industry-specific terminology and complex workplace scenarios.'
+        'intermedio': 'Use moderate vocabulary. Include slightly longer sentences but keep them clear.',
+        'avanzado': 'Use more sophisticated vocabulary and longer sentences. Include more complex scenarios.'
       };
-      instruction += ` The learner's English level is ${levelContext}. ${levelAdjustments[levelContext as keyof typeof levelAdjustments] || 'Use moderate difficulty appropriate for workplace communication.'}`;
+      instruction += ` The learner's English level is ${levelContext}. ${levelAdjustments[levelContext as keyof typeof levelAdjustments] || 'Use moderate difficulty appropriate for everyday communication.'}`;
     }
 
     const response = await anthropic.messages.create({
@@ -82,9 +76,9 @@ Topic request (in Spanish): "${mainTopic}"
 
 Create a JSON response with:
 1. "englishContent": 5-7 short, practical English statements about this topic. Use:
-   - Simple workplace vocabulary 
-   - Common phrases workers actually hear on the job
-   - Clear, everyday language (avoid technical jargon)
+   - Simple, everyday vocabulary
+   - Common phrases people use in daily life
+   - Clear, natural language (avoid overly technical jargon)
    - Each statement should be 1-2 sentences maximum
 
 2. "spanishQuestions": Exactly 5 English comprehension exercises. Each should present one English sentence from the content above, followed by 4 Spanish translation options where only one is correct. 
@@ -93,14 +87,14 @@ IMPORTANT: This tests ENGLISH comprehension, NOT Spanish grammar. ALL four Spani
    - Misunderstanding key English words (confusing 'day off' with 'work day', 'safety glasses' with 'sunglasses', 'shift' with 'shirt')
    - Mishearing similar English sounds ('Thursday' vs 'Tuesday', 'noon' vs 'moon')
    - Confusing English prepositions, verb tenses, or word order
-   - Misunderstanding English workplace terminology or context
+   - Misunderstanding English terminology or context
    - Confusing English homophones or similar-sounding words
 
 Use clear, simple Spanish that a middle school graduate would easily understand. Avoid complex Spanish vocabulary, subjunctive mood, or advanced grammar structures. All Spanish should be straightforward and natural.
 
 3. "spanishPhoneticTranscription": A phonetic transcription of the English content using Spanish alphabet letters (like in Barron's bilingual dictionaries). Help Spanish speakers pronounce the English words by writing them as they would sound using Spanish spelling patterns.
 
-Focus on practical vocabulary for: workplace safety, tools, instructions, time, weather, basic communication.
+Focus on practical vocabulary for: daily life situations, basic communication, common activities, and general useful phrases.
 
 Example format:
 {
