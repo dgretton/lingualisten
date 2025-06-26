@@ -326,8 +326,8 @@ export function StudentQuiz() {
     }
   };
 
-  // Send results by email (just a simulation)
-  const handleSendEmail = (email: string) => {
+  // Send results by email
+  const handleSendEmail = async (email: string) => {
     if (!email) {
       toast({
         title: "Email requerido",
@@ -337,10 +337,49 @@ export function StudentQuiz() {
       return;
     }
     
-    toast({
-      title: "Resultados enviados",
-      description: `Los resultados han sido enviados a ${email}.`
-    });
+    // Get the assessment data
+    const assessmentData = {
+      id: Date.now(), // For the standalone quiz, generate a unique ID
+      userName: studentName || "Usuario",
+      score: correctAnswersCount,
+      totalQuestions: QUIZ_QUESTIONS.length,
+      answers: answers.map(answer => ({
+        questionId: answer.questionIndex,
+        selectedOption: answer.selectedOptionIndex,
+        isCorrect: answer.isCorrect
+      }))
+    };
+    
+    try {
+      // Create assessment on the backend
+      const response = await fetch('/api/student-quiz-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          assessmentData,
+          contactMethod: 'email',
+          contactInfo: email
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to send results');
+      }
+      
+      toast({
+        title: "Resultados enviados",
+        description: `Los resultados han sido enviados a ${email}.`
+      });
+    } catch (error) {
+      console.error('Error sending results:', error);
+      toast({
+        title: "Error al enviar",
+        description: "Hubo un problema al enviar los resultados. Por favor intenta de nuevo.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Send results by SMS (just a simulation)
