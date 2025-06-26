@@ -1,6 +1,11 @@
 import { config } from "dotenv";
 config(); // Load environment variables from .env file
 
+// Debug environment variables
+console.log("Environment check:");
+console.log("ANTHROPIC_API_KEY exists:", !!process.env.ANTHROPIC_API_KEY);
+console.log("ANTHROPIC_API_KEY length:", process.env.ANTHROPIC_API_KEY?.length || 0);
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
