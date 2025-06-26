@@ -1,0 +1,5 @@
+Vas a probar una aplicación de aprendizaje de idiomas para hispanohablantes que están aprendiendo inglés. Está diseñada para el estudio individual mediante la interacción con un agente de inteligencia artificial. Cada vez que la uses, es una nueva interacción y no se guardan las anteriores. Es muy sencilla y queremos mejorarla, por lo que podríamos hacerte algunas preguntas opcionales sobre tu trabajo e intereses.
+No te preguntaremos tu nombre completo, ubicación, país de origen ni ningún otro dato personal.
+
+No se garantiza que todas las funciones de la app funcionen siempre. La app podría dejar de estar disponible o su apariencia y funciones podrían cambiar con el tiempo.
+
