@@ -31,15 +31,48 @@ export async function generateContentAndQuestions(
   spanishPrompt: string,
 ): Promise<GeneratedContent> {
   try {
+    // Parse the prompt to extract context if provided
+    const lines = spanishPrompt.split('\n');
+    const mainTopic = lines[0];
+    let jobContext = '';
+    let levelContext = '';
+    
+    // Look for additional context
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].toLowerCase();
+      if (line.includes('tipo de trabajo') || line.includes('estudios:')) {
+        jobContext = lines[i].split(':')[1]?.trim() || '';
+      }
+      if (line.includes('nivel de inglés:')) {
+        levelContext = lines[i].split(':')[1]?.trim() || '';
+      }
+    }
+
+    // Build context-aware instruction
+    let instruction = `You are helping adult Spanish-speaking workers learn English for their jobs. They have middle school education and need practical workplace vocabulary.`;
+    
+    if (jobContext) {
+      instruction += ` The learner works in or studies: ${jobContext}. Tailor the vocabulary and examples to be relevant to this field.`;
+    }
+    
+    if (levelContext) {
+      const levelAdjustments = {
+        'básico': 'Use very simple vocabulary, short sentences, and focus on the most essential phrases. Avoid complex grammar.',
+        'intermedio': 'Use moderate vocabulary with some workplace-specific terms. Include slightly longer sentences but keep them clear.',
+        'avanzado': 'Use more sophisticated vocabulary and longer sentences. Include industry-specific terminology and complex workplace scenarios.'
+      };
+      instruction += ` The learner's English level is ${levelContext}. ${levelAdjustments[levelContext as keyof typeof levelAdjustments] || 'Use moderate difficulty appropriate for workplace communication.'}`;
+    }
+
     const response = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 2000,
       messages: [
         {
           role: "user",
-          content: `You are helping adult Spanish-speaking workers (dairy workers, landscapers) learn English for their jobs. They have middle school education and need practical workplace vocabulary.
+          content: `${instruction}
 
-Topic request (in Spanish): "${spanishPrompt}"
+Topic request (in Spanish): "${mainTopic}"
 
 Create a JSON response with:
 1. "englishContent": 5-7 short, practical English statements about this topic. Use:

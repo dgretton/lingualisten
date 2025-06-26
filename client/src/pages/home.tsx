@@ -34,6 +34,9 @@ export default function Home() {
   // App state
   const [currentStep, setCurrentStep] = useState<'setup' | 'quiz' | 'results'>('setup');
   const [topic, setTopic] = useState("");
+  const [jobType, setJobType] = useState("");
+  const [englishLevel, setEnglishLevel] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
   
   // Quiz state
   const [topicId, setTopicId] = useState<number | null>(null);
@@ -171,8 +174,20 @@ export default function Home() {
       return;
     }
     
+    // Build context for AI
+    let contextualPrompt = topic;
+    if (jobType.trim() || englishLevel) {
+      contextualPrompt += "\n\nContexto adicional:";
+      if (jobType.trim()) {
+        contextualPrompt += `\nTipo de trabajo/estudios: ${jobType}`;
+      }
+      if (englishLevel) {
+        contextualPrompt += `\nNivel de inglés: ${englishLevel}`;
+      }
+    }
+    
     generateContentMutation.mutate({
-      prompt: topic,
+      prompt: contextualPrompt,
       userName: "Usuario"
     });
   };
@@ -236,6 +251,9 @@ export default function Home() {
   const handleReset = () => {
     setCurrentStep('setup');
     setTopic("");
+    setJobType("");
+    setEnglishLevel("");
+    setShowOptions(false);
     setTopicId(null);
     setQuestions([]);
     setQuestionMap({});
@@ -422,6 +440,60 @@ export default function Home() {
                       className="mt-1"
                       rows={3}
                     />
+                  </div>
+
+                  {/* Options Section */}
+                  <div className="border-t pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowOptions(!showOptions)}
+                      className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-800 mb-3"
+                    >
+                      <span>Opciones (opcional)</span>
+                      <svg 
+                        className={`w-4 h-4 transition-transform ${showOptions ? 'rotate-180' : ''}`}
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    {showOptions && (
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="jobType" className="text-sm font-medium text-slate-700">
+                            Tipo de trabajos o estudios
+                          </Label>
+                          <Textarea
+                            id="jobType"
+                            value={jobType}
+                            onChange={(e) => setJobType(e.target.value)}
+                            placeholder="Ejemplo: Trabajo en construcción, estudios de enfermería, trabajo en restaurante..."
+                            className="mt-1"
+                            rows={2}
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="englishLevel" className="text-sm font-medium text-slate-700">
+                            Nivel de inglés
+                          </Label>
+                          <select
+                            id="englishLevel"
+                            value={englishLevel}
+                            onChange={(e) => setEnglishLevel(e.target.value)}
+                            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                          >
+                            <option value="">Seleccionar nivel (opcional)</option>
+                            <option value="básico">Básico</option>
+                            <option value="intermedio">Intermedio</option>
+                            <option value="avanzado">Avanzado</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   <Button 
