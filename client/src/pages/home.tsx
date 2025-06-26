@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { DisclaimerModal } from "@/components/disclaimer-modal";
+import { Info } from "lucide-react";
 
 interface QuizQuestion {
   id: number;
@@ -27,9 +28,8 @@ interface Answer {
 export default function Home() {
   const { toast } = useToast();
   
-  // Disclaimer state
-  const [showDisclaimer, setShowDisclaimer] = useState(true);
-  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+  // App info modal state
+  const [showAppInfo, setShowAppInfo] = useState(false);
   
   // App state
   const [currentStep, setCurrentStep] = useState<'setup' | 'quiz' | 'results'>('setup');
@@ -231,11 +231,6 @@ export default function Home() {
     }
   };
 
-  // Handle disclaimer acceptance
-  const handleDisclaimerAccept = () => {
-    setDisclaimerAccepted(true);
-    setShowDisclaimer(false);
-  };
 
   // Reset quiz completely (new topic)
   const handleReset = () => {
@@ -312,80 +307,83 @@ export default function Home() {
     setCurrentStep('quiz');
   };
 
-  // Show disclaimer first
-  if (!disclaimerAccepted) {
-    return (
-      <>
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-slate-800 mb-2">LinguaListen</h1>
-              <p className="text-slate-600">Mejora tu comprensión auditiva en inglés</p>
-            </div>
-            
-            <Card className="p-6">
-              <div className="text-center">
-                <p className="text-slate-600 mb-4">
-                  Cargando aplicación...
-                </p>
-              </div>
-            </Card>
-          </div>
-        </div>
-        <DisclaimerModal 
-          isOpen={showDisclaimer} 
-          onAccept={handleDisclaimerAccept} 
-        />
-      </>
-    );
-  }
 
   // Setup Step
   if (currentStep === 'setup') {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">LinguaListen</h1>
-            <p className="text-slate-600">Mejora tu comprensión auditiva en inglés</p>
+      <>
+        <div className="min-h-screen bg-slate-50 flex flex-col">
+          {/* Header with info button */}
+          <div className="flex justify-between items-center p-4">
+            <div></div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAppInfo(true)}
+              className="text-slate-600 hover:text-slate-800"
+            >
+              <Info className="h-4 w-4 mr-2" />
+              Información de la app
+            </Button>
           </div>
-          
-          <Card className="p-6">
-            <form onSubmit={handleTopicSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="topic" className="text-sm font-medium text-slate-700">
-                  ¿Sobre qué tema quieres practicar?
-                </Label>
-                <Textarea
-                  id="topic"
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="Ejemplo: Conversaciones en restaurantes, herramientas de trabajo, entrevistas..."
-                  className="mt-1"
-                  rows={3}
-                />
+
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold text-slate-800 mb-2">LinguaListen</h1>
+                <p className="text-slate-600">Mejora tu comprensión auditiva en inglés</p>
               </div>
               
-              <Button 
-                type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700"
-                disabled={generateContentMutation.isPending}
-              >
-                {generateContentMutation.isPending ? "Generando..." : "Comenzar práctica"}
-              </Button>
-            </form>
-            
-            <div className="mt-6 text-center">
-              <a 
-                href="/quiz" 
-                className="text-sm text-blue-600 hover:text-blue-800"
-              >
-                Ver ejemplo de quiz para estudiantes →
-              </a>
+              <Card className="p-6">
+                <form onSubmit={handleTopicSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="topic" className="text-sm font-medium text-slate-700">
+                      ¿Sobre qué tema quieres practicar?
+                    </Label>
+                    <Textarea
+                      id="topic"
+                      value={topic}
+                      onChange={(e) => setTopic(e.target.value)}
+                      placeholder="Ejemplo: Conversaciones en restaurantes, herramientas de trabajo, entrevistas..."
+                      className="mt-1"
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    disabled={generateContentMutation.isPending}
+                  >
+                    {generateContentMutation.isPending ? "Generando..." : "Comenzar práctica"}
+                  </Button>
+                </form>
+                
+                <div className="mt-6 text-center">
+                  <a 
+                    href="/quiz" 
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Ver ejemplo de quiz para estudiantes →
+                  </a>
+                </div>
+              </Card>
             </div>
-          </Card>
+          </div>
+
+          {/* Footer with availability disclaimer */}
+          <div className="p-4 text-center">
+            <p className="text-xs text-slate-500">
+              No se garantiza que todas las funciones de la app funcionen siempre. La app podría dejar de estar disponible o su apariencia y funciones podrían cambiar con el tiempo.
+            </p>
+          </div>
         </div>
-      </div>
+
+        <DisclaimerModal 
+          isOpen={showAppInfo} 
+          onClose={() => setShowAppInfo(false)} 
+        />
+      </>
     );
   }
 
@@ -406,8 +404,18 @@ export default function Home() {
               </Button>
               <h1 className="text-xl font-bold text-slate-800">Práctica de Comprensión</h1>
             </div>
-            <div className="text-lg font-semibold text-slate-700">
-              {correctAnswersCount}/{currentQuestionIndex + 1}
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAppInfo(true)}
+                className="text-slate-600 hover:text-slate-800"
+              >
+                <Info className="h-4 w-4" />
+              </Button>
+              <div className="text-lg font-semibold text-slate-700">
+                {correctAnswersCount}/{currentQuestionIndex + 1}
+              </div>
             </div>
           </div>
 
@@ -515,6 +523,11 @@ export default function Home() {
             </Button>
           </div>
         </div>
+
+        <DisclaimerModal 
+          isOpen={showAppInfo} 
+          onClose={() => setShowAppInfo(false)} 
+        />
       </div>
     );
   }
@@ -524,8 +537,23 @@ export default function Home() {
     const percentScore = Math.round((finalResult.score / finalResult.totalQuestions) * 100);
     
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl">
+      <>
+        <div className="min-h-screen bg-slate-50 flex flex-col">
+          {/* Header with info button */}
+          <div className="flex justify-end p-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAppInfo(true)}
+              className="text-slate-600 hover:text-slate-800"
+            >
+              <Info className="h-4 w-4 mr-2" />
+              Información de la app
+            </Button>
+          </div>
+
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="w-full max-w-2xl">
           <Card className="p-8 text-center">
             <div className="mb-6">
               <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-4">
@@ -602,8 +630,15 @@ export default function Home() {
               </Button>
             </div>
           </Card>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <DisclaimerModal 
+          isOpen={showAppInfo} 
+          onClose={() => setShowAppInfo(false)} 
+        />
+      </>
     );
   }
 
