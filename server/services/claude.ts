@@ -81,12 +81,16 @@ Create a JSON response with:
    - Clear, everyday language (avoid technical jargon)
    - Each statement should be 1-2 sentences maximum
 
-2. "spanishQuestions": Exactly 5 translation exercises. Each should present one English sentence from the content above, followed by 4 Spanish translation options where only one is correct. The incorrect options should be plausible but wrong translations that use:
-   - Similar vocabulary but wrong meaning
-   - Common translation mistakes Spanish speakers make
-   - Similar sentence length and structure
-   - Easily confused English words translated incorrectly
-   Make the incorrect options realistic mistakes that adult learners would actually consider.
+2. "spanishQuestions": Exactly 5 English comprehension exercises. Each should present one English sentence from the content above, followed by 4 Spanish translation options where only one is correct. 
+
+IMPORTANT: This tests ENGLISH comprehension, NOT Spanish grammar. ALL four Spanish options must be grammatically correct and use proper middle school level Spanish. The incorrect options should test whether the learner understood the ENGLISH correctly by:
+   - Misunderstanding key English words (confusing 'day off' with 'work day', 'safety glasses' with 'sunglasses', 'shift' with 'shirt')
+   - Mishearing similar English sounds ('Thursday' vs 'Tuesday', 'noon' vs 'moon')
+   - Confusing English prepositions, verb tenses, or word order
+   - Misunderstanding English workplace terminology or context
+   - Confusing English homophones or similar-sounding words
+
+Use clear, simple Spanish that a middle school graduate would easily understand. Avoid complex Spanish vocabulary, subjunctive mood, or advanced grammar structures. All Spanish should be straightforward and natural.
 
 3. "spanishPhoneticTranscription": A phonetic transcription of the English content using Spanish alphabet letters (like in Barron's bilingual dictionaries). Help Spanish speakers pronounce the English words by writing them as they would sound using Spanish spelling patterns.
 
@@ -98,12 +102,14 @@ Example format:
   "spanishQuestions": [
     {
       "question": "Put on your safety glasses before starting work.",
-      "options": ["Ponte los lentes de seguridad antes de empezar a trabajar.", "Ponte los guantes de seguridad antes de empezar el trabajo.", "Pon las gafas de sol antes de comenzar el trabajo.", "Ponte el casco de seguridad antes de empezar a trabajar."],
+      "options": ["Ponte los lentes de seguridad antes de empezar a trabajar.", "Ponte los guantes de seguridad antes de empezar a trabajar.", "Ponte las gafas de sol antes de empezar a trabajar.", "Ponte el casco de seguridad antes de empezar a trabajar."],
       "correctOptionIndex": 0
     }
   ],
   "spanishPhoneticTranscription": "1. Put on yor sefti glases bifor starting guork.\\n2. De supervaisor guil chek yor progres at nun.\\n3. Klin yor tuls at de end of ich shift."
 }
+
+Note: In this example, all Spanish options are grammatically correct, but they test whether the learner understood "safety glasses" vs "gloves/sunglasses/helmet" in English.
 
 Respond only with valid JSON.`
         }
