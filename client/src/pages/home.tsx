@@ -418,7 +418,7 @@ export default function Home() {
                       id="topic"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="Ejemplo: Conversaciones en restaurantes, herramientas de trabajo, entrevistas..."
+                      placeholder="Pon tu cursor aquí y escribe tu tema. Ejemplo: Conversaciones en restaurantes, herramientas de trabajo, entrevistas..."
                       className="mt-1"
                       rows={3}
                     />
