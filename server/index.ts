@@ -1,5 +1,6 @@
+// Load environment variables FIRST, before any other imports
 import { config } from "dotenv";
-config(); // Load environment variables from .env file
+config();
 
 // Debug environment variables
 console.log("Environment check:");
