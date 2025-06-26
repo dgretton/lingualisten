@@ -1,6 +1,11 @@
 // Load environment variables first
 import { config } from "dotenv";
-config();
+import { existsSync } from "fs";
+
+// Only load .env if it exists (for local development)
+if (existsSync('.env')) {
+  config();
+}
 
 import Anthropic from '@anthropic-ai/sdk';
 

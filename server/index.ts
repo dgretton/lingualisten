@@ -1,6 +1,11 @@
 // Load environment variables FIRST, before any other imports
 import { config } from "dotenv";
-config();
+import { existsSync } from "fs";
+
+// Only load .env if it exists (for local development)
+if (existsSync('.env')) {
+  config();
+}
 
 // Debug environment variables
 console.log("Environment check:");
