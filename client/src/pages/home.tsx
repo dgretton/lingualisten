@@ -251,6 +251,7 @@ export default function Home() {
     const percentScore = Math.round((finalResult.score / finalResult.totalQuestions) * 100);
     
     let text = `*🎯 Resultados de LinguaListen*\n\n`;
+    text += `*Tema:* ${topic}\n\n`;
     text += `*Puntuación:* ${finalResult.score}/${finalResult.totalQuestions} (${percentScore}%)\n\n`;
     text += `*Resumen detallado:*\n\n`;
     
@@ -629,13 +630,8 @@ export default function Home() {
             <div className="w-full max-w-2xl">
           <Card className="p-8 text-center">
             <div className="mb-6">
-              <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-slate-800 mb-2">¡Excelente trabajo!</h2>
-              <p className="text-slate-600">Has completado la práctica de comprensión auditiva</p>
+              <h2 className="text-2xl font-bold text-slate-800 mb-2">Resultados</h2>
+              <p className="text-slate-600 mb-4">Tema: {topic}</p>
             </div>
 
             <div className="bg-white rounded-lg border p-6 mb-6">
