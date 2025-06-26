@@ -1,3 +1,7 @@
+// Load environment variables first
+import { config } from "dotenv";
+config();
+
 import Anthropic from '@anthropic-ai/sdk';
 
 // Debug the API key at module load time
