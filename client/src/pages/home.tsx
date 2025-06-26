@@ -246,6 +246,79 @@ export default function Home() {
     setFinalResult(null);
   };
 
+  // Format results for WhatsApp sharing
+  const formatResultsForWhatsApp = () => {
+    const percentScore = Math.round((finalResult.score / finalResult.totalQuestions) * 100);
+    
+    let text = `*🎯 Resultados de LinguaListen*\n\n`;
+    text += `*Puntuación:* ${finalResult.score}/${finalResult.totalQuestions} (${percentScore}%)\n\n`;
+    text += `*Resumen detallado:*\n\n`;
+    
+    finalResult.answers.forEach((answer: any, index: number) => {
+      const questionNum = index + 1;
+      const status = answer.isCorrect ? '✅' : '❌';
+      
+      text += `${questionNum}. ${status} *${answer.question}*\n`;
+      
+      if (answer.isCorrect) {
+        text += `   ✓ ${answer.selectedAnswer}\n\n`;
+      } else {
+        text += `   ~${answer.selectedAnswer}~\n`;
+        text += `   ✓ ${answer.correctAnswer}\n\n`;
+      }
+    });
+    
+    text += `_Generado por LinguaListen - Práctica de comprensión auditiva en inglés_`;
+    
+    return text;
+  };
+
+  // Share results using Web Share API or fallback to clipboard
+  const handleShareResults = async () => {
+    const formattedText = formatResultsForWhatsApp();
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Resultados de LinguaListen',
+          text: formattedText,
+        });
+      } catch (error) {
+        // User cancelled or error occurred, fallback to clipboard
+        if (error.name !== 'AbortError') {
+          await copyToClipboard(formattedText);
+        }
+      }
+    } else {
+      // Fallback to clipboard
+      await copyToClipboard(formattedText);
+    }
+  };
+
+  // Copy to clipboard with user feedback
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "¡Copiado!",
+        description: "Los resultados se han copiado al portapapeles. Ahora puedes pegarlos en WhatsApp o cualquier otra app.",
+      });
+    } catch (error) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      toast({
+        title: "¡Copiado!",
+        description: "Los resultados se han copiado al portapapeles. Ahora puedes pegarlos en WhatsApp o cualquier otra app.",
+      });
+    }
+  };
+
   // Retry the same quiz with same questions
   const handleRetryQuiz = () => {
     // Reshuffle the options for each question
@@ -623,10 +696,17 @@ export default function Home() {
                 Nuevo tema
               </Button>
               <Button
-                onClick={() => window.print()}
-                className="px-6 bg-blue-600 hover:bg-blue-700"
+                onClick={handleShareResults}
+                className="px-6 bg-green-600 hover:bg-green-700"
               >
-                Imprimir resultados
+                📱 Guardar resultados
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => window.print()}
+                className="px-6"
+              >
+                🖨️ Imprimir PDF
               </Button>
             </div>
           </Card>
